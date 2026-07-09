@@ -1,0 +1,98 @@
+{
+  "metadata": {
+    "generator": "ADMBw-Batch-Generator v1.0",
+    "standard": "ADMBw v2025.10",
+    "source_document": "Einsatzführung_Soll-Konzept_v2.txt",
+    "description": "Extraktion der Capability- und Rollenstruktur aus dem Soll-Konzept Einsatzführung",
+    "node_count": 5,
+    "edge_count": 4
+  },
+  "nodes": [
+    {
+      "id": "n1",
+      "name": "Einsatzführung",
+      "stereotype": "Capability",
+      "metaclass": "Class",
+      "labels": ["Capability"],
+      "properties": {
+        "AbstractionLevel": "Operational"
+      }
+    },
+    {
+      "id": "n2",
+      "name": "Gefechtsstand",
+      "stereotype": "OperationalPerformer",
+      "metaclass": "Class",
+      "labels": ["OperationalPerformer"],
+      "properties": {
+        "Nationality": "DEU"
+      }
+    },
+    {
+      "id": "n3",
+      "name": "Lagebild erstellen",
+      "stereotype": "OperationalActivity",
+      "metaclass": "Activity",
+      "labels": ["OperationalActivity"],
+      "properties": {
+        "AbstractionLevel": "Operational"
+      }
+    },
+    {
+      "id": "n4",
+      "name": "Führungsfähigkeit sicherstellen",
+      "stereotype": "StrategicConstraint",
+      "metaclass": "Class",
+      "labels": ["StrategicConstraint"],
+      "properties": {}
+    },
+    {
+      "id": "n5",
+      "name": "FüInfoSys",
+      "stereotype": "ServiceSpecification",
+      "metaclass": "Class",
+      "labels": ["ServiceSpecification"],
+      "properties": {
+        "Critical service": "true"
+      }
+    }
+  ],
+  "edges": [
+    {
+      "id": "e1",
+      "source_id": "n2",
+      "target_id": "n1",
+      "type": "EXHIBITS",
+      "connector": "Exhibits",
+      "metaclass": "Abstraction",
+      "properties": {}
+    },
+    {
+      "id": "e2",
+      "source_id": "n2",
+      "target_id": "n3",
+      "type": "PERFORMS_IN_CONTEXT",
+      "connector": "PerformsInContext",
+      "metaclass": "Abstraction",
+      "properties": {}
+    },
+    {
+      "id": "e3",
+      "source_id": "n1",
+      "target_id": "n4",
+      "type": "SATISFY",
+      "connector": "Satisfy",
+      "metaclass": "Dependency",
+      "properties": {}
+    },
+    {
+      "id": "e4",
+      "source_id": "n5",
+      "target_id": "n4",
+      "type": "SATISFY",
+      "connector": "Satisfy",
+      "metaclass": "Dependency",
+      "properties": {}
+    }
+  ]
+}
