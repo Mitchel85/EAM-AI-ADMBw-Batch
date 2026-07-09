@@ -43,28 +43,49 @@ KI-gestützter Agent zur Extraktion von ADMBw-konformen **Knoten und Kanten** au
 
 ## 🚀 In ArAMIS WEB laden
 
-ArAMIS WEB nutzt **Neo4j als Graphdatenbank** (Podman-Container). Der JSON-Batch wird als **Cypher-Script** geladen:
+ArAMIS WEB nutzt **Neo4j mit APOC**. Der JSON-Batch wird über die APOC-Prozeduren geladen:
 
-### Variante A: Cypher-Shell (Podman)
+### 1. JSON bereitstellen
 ```bash
-# Neo4j-Container ermitteln
-podman ps | grep neo4j
-
-# Cypher ausführen
-podman exec -i <neo4j-container> cypher-shell -u neo4j -p <passwort> << 'CYPHER'
-MERGE (n1:Capability {name: "Einsatzführung"})
-  SET n1.stereotype = "Capability", n1.metaclass = "Class";
-
-MATCH (src {name: "Gefechtsstand"}), (tgt {name: "Einsatzführung"})
-MERGE (src)-[:EXHIBITS {connector: "Exhibits"}]->(tgt);
-CYPHER
+# In Neo4j-Importverzeichnis kopieren (Podman)
+podman cp batch.json <neo4j-container>:/var/lib/neo4j/import/
 ```
 
-### Variante B: Neo4j Browser
-- URL: `http://<aramis-host>:7474`
-- Cypher-Statements dort einfügen und ausführen
+### 2. KNOTEN laden (Neo4j Browser / cypher-shell)
+```cypher
+CALL apoc.load.json("file:///import/batch.json") YIELD value
+UNWIND value.nodes AS n
+MERGE (node {id: n.id})
+SET node.name = n.name,
+    node.stereotype = n.stereotype,
+    node.metaclass = n.metaclass
+SET node.shortName = n.properties.shortName,
+    node.serviceType = n.properties.serviceType
+WITH node, n
+CALL apoc.create.addLabels(node, n.labels) YIELD node AS labeledNode
+RETURN count(labeledNode) AS KnotenErstellt;
+```
 
-> 💡 Die Verbindungsdaten (Host, Benutzer, Passwort) sind dieselben, die ArAMIS WEB für seine Neo4j-Verbindung nutzt (siehe `podman-compose/.env`).
+### 3. KANTEN laden
+```cypher
+CALL apoc.load.json("file:///import/batch.json") YIELD value
+UNWIND value.edges AS e
+MATCH (src {id: e.source_id}), (tgt {id: e.target_id})
+CALL apoc.merge.relationship(
+  src, e.type,
+  {connector: e.type},
+  {metaclass: e.metaclass},
+  tgt
+) YIELD rel
+RETURN count(rel) AS BeziehungenErstellt;
+```
+
+### 4. Prüfen
+```cypher
+MATCH (n)-[e]-(m) RETURN n, e, m;
+```
+
+> ⚠️ Properties **einzeln setzen**, nicht als Map! Nur gefüllte Properties auflisten.
 
 ---
 

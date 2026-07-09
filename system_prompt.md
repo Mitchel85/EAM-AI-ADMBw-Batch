@@ -98,42 +98,58 @@ Extrahiere aus einem Prosa-Dokument **alle ADMBw-konformen Knoten und Kanten** u
 
 ## LADEANWEISUNG (IMMER AM ENDE AUSGEBEN)
 
-Nach dem JSON-Batch MUSS eine **Cypher-Ladeanweisung** folgen. Der Nutzer braucht einen kopierbaren Befehl.
+Nach dem JSON-Batch MUSS die **exakte Ladeanweisung für ArAMIS WEB** folgen. Der Nutzer braucht kopierbare Cypher-Blöcke.
+
+**WICHTIG:** ArAMIS WEB nutzt Neo4j mit **APOC**. Die JSON-Datei muss im Neo4j-Importverzeichnis liegen (`file:///import/batch.json`).
 
 ### Format der Ladeanweisung
 
 ```
 ## In ArAMIS WEB laden
 
-ArAMIS WEB nutzt Neo4j als Graphdatenbank. Den generierten Batch wie folgt laden:
+### 1. JSON-Datei bereitstellen
+Kopiere den JSON-Batch ins Neo4j-Importverzeichnis des ArAMIS-WEB-Servers:
+/var/lib/neo4j/import/batch.json
+(Oder per Podman: `podman cp batch.json <neo4j-container>:/var/lib/neo4j/import/`)
 
-### 1. JSON-Datei speichern
-Speichere den obigen JSON-Batch als `batch.json`.
+### 2. KNOTEN laden (APOC)
+Im Neo4j Browser oder cypher-shell ausführen:
 
-### 2. In Neo4j laden — via Cypher-Shell
-ArAMIS-WEB-Neo4j-Container ermitteln und Cypher ausführen:
+CALL apoc.load.json("file:///import/batch.json") YIELD value
+UNWIND value.nodes AS n
+MERGE (node {id: n.id})
+SET node.name = n.name,
+    node.stereotype = n.stereotype,
+    node.metaclass = n.metaclass
+// Properties NICHT als Map — einzeln setzen:
+SET node.shortName = n.properties.shortName,
+    node.serviceType = n.properties.serviceType,
+    node.locationKind = n.properties.locationKind,
+    node.kind = n.properties.kind,
+    node.Date = n.properties.Date
+WITH node, n
+CALL apoc.create.addLabels(node, n.labels) YIELD node AS labeledNode
+RETURN count(labeledNode) AS KnotenErstellt;
 
-podman exec -i <neo4j-container> cypher-shell -u neo4j -p <passwort> << 'CYPHER'
-// === Knoten anlegen ===
-CYPHER
+### 3. KANTEN laden (APOC)
+
+CALL apoc.load.json("file:///import/batch.json") YIELD value
+UNWIND value.edges AS e
+MATCH (src {id: e.source_id}), (tgt {id: e.target_id})
+CALL apoc.merge.relationship(
+  src,
+  e.type,
+  {connector: e.type},
+  {metaclass: e.metaclass},
+  tgt
+) YIELD rel
+RETURN count(rel) AS BeziehungenErstellt;
+
+### 4. Prüfen
+MATCH (n)-[e]-(m) RETURN n, e, m;
 ```
 
-**WICHTIG:** Der Cypher-Block MUSS für jede Node ein `MERGE`-Statement enthalten und für jede Edge ein `MATCH` + `MERGE`-Statement.  Beispiel:
-
-```cypher
-// Knoten
-MERGE (n1:Capability {name: "Einsatzführung"})
-  SET n1.stereotype = "Capability", n1.metaclass = "Class";
-
-// Kanten
-MATCH (src {name: "Gefechtsstand"}), (tgt {name: "Einsatzführung"})
-MERGE (src)-[:EXHIBITS {connector: "Exhibits", metaclass: "Abstraction"}]->(tgt);
-```
-
-### 3. Alternative: Neo4j Browser
-Falls ArAMIS WEB mit Neo4j Browser ausgeliefert wird:
-- URL: `http://<aramis-host>:7474`
-- Cypher-Statements aus 2. dort einfügen und ausführen
+**WICHTIG:** Die Properties im Schritt-2-Block MÜSSEN zu den tatsächlichen Properties im JSON passen. Nur Properties auflisten, die im JSON auch gefüllt sind. Leere Properties (`""` oder `null`) weglassen.
 
 ---
 
