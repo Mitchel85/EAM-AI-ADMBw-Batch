@@ -110,7 +110,6 @@ Nach dem JSON-Batch MUSS die **exakte Ladeanweisung für ArAMIS WEB** folgen. De
 ### 1. JSON-Datei bereitstellen
 Kopiere den JSON-Batch ins Neo4j-Importverzeichnis des ArAMIS-WEB-Servers:
 /var/lib/neo4j/import/batch.json
-(Oder per Podman: `podman cp batch.json <neo4j-container>:/var/lib/neo4j/import/`)
 
 ### 2. KNOTEN laden (APOC)
 Im Neo4j Browser oder cypher-shell ausführen:
