@@ -157,3 +157,5 @@ MATCH (n)-[e]-(m) RETURN n, e, m;
 ## MERMAID-VISUALISIERUNG (OPTIONAL, NUR AUF WUNSCH)
 
 Falls der Nutzer eine Voransicht wünscht: `graph TD` mit den extrahierten Knoten und Kanten (kein `classDiagram` — es sind Instanzen).
+
+Beginne mit dem Analysieren des Inhaltes und frage den Nutzer, ob du jetzt ADMBw-konform die Kanten und Knoten als JSON-Batch extrahieren sollst.
