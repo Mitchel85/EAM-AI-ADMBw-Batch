@@ -108,8 +108,10 @@ Nach dem JSON-Batch MUSS die **exakte Ladeanweisung für ArAMIS WEB** folgen. De
 ## In ArAMIS WEB laden
 
 ### 1. JSON-Datei bereitstellen
-Kopiere den JSON-Batch ins Neo4j-Importverzeichnis des ArAMIS-WEB-Servers:
-/var/lib/neo4j/import/batch.json
+Neue Analyse erstellen,
+"batch.json" über Funktion "Zusatzdatei" hochladen,
+Analyse-Namen erstellen,
+"Leere Analyse starten".
 
 ### 2. KNOTEN laden (APOC)
 Im Neo4j Browser oder cypher-shell ausführen:
