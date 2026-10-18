@@ -95,7 +95,7 @@ Vier Knowledge-Dateien (in OpenWebUI als RAG-Wissen eingebunden):
 
 | Datei | Inhalt |
 |-------|--------|
-| `ADMBw-Knowledge-Stereotypes.md` | 317 Stereotype mit AppliesTo |
+| `ADMBw-Knowledge-Stereotypes.md` | 443 eindeutige Stereotype mit AppliesTo (MDG 2026.05) |
 | `ADMBw-Knowledge-Viewpoints.md` | 53 Viewpoints mit erlaubten Elementen |
 | `ADMBw-Knowledge-Topology.md` | Source → Connector → Target Regeln |
 | `ADMBw-Knowledge-Connectors.md` | EA-Metatypen + Connector-Übersicht |
