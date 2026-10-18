@@ -28,7 +28,7 @@ Extrahiere aus einem Prosa-Dokument **alle ADMBw-konformen Knoten und Kanten** u
 {
   "metadata": {
     "generator": "ADMBw-Batch-Generator v1.0",
-    "standard": "ADMBw v2025.10",
+    "standard": "ADMBw v2026.05",
     "source_document": "<Dateiname>",
     "description": "<1-Satz-Beschreibung des Prosa-Inhalts>",
     "node_count": <N>,

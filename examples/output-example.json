@@ -1,7 +1,7 @@
 {
   "metadata": {
     "generator": "ADMBw-Batch-Generator v1.0",
-    "standard": "ADMBw v2025.10",
+    "standard": "ADMBw v2026.05",
     "source_document": "Einsatzführung_Soll-Konzept_v2.txt",
     "description": "Extraktion der Capability- und Rollenstruktur aus dem Soll-Konzept Einsatzführung",
     "node_count": 5,

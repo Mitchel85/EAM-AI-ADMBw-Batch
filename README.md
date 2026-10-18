@@ -1,7 +1,7 @@
 # ADMBw-Batch-Generator v1.0
 
 ![Status](https://img.shields.io/badge/Status-Active-success)
-![Standard](https://img.shields.io/badge/Standard-ADMBw%20v2025.10-blue)
+![Standard](https://img.shields.io/badge/Standard-MDG%202026.05-blue)
 ![Output](https://img.shields.io/badge/Output-JSON%20Batch-orange)
 ![Ziel](https://img.shields.io/badge/Ziel-ArAMIS%20WEB%20%7C%20Neo4j-purple)
 
