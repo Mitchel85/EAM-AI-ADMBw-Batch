@@ -102,13 +102,14 @@ Bei Chunks (mehrere Dateien): Schritte 2 und 3 je Datei wiederholen.
 
 ## 📚 Wissensbasis
 
-Vier Knowledge-Dateien (in OpenWebUI als RAG-Wissen eingebunden), generiert vom [EAM-ADMBw-MDG-Parser](https://github.com/Mitchel85/EAM-ADMBw-MDG-Parser) aus der MDG 2026.05:
+Vier MDG-generierte Knowledge-Dateien (in OpenWebUI als RAG-Wissen eingebunden), generiert vom [EAM-ADMBw-MDG-Parser](https://github.com/Mitchel85/EAM-ADMBw-MDG-Parser) aus der MDG 2026.05, plus eine kuratierte Connector-Übersicht:
 
 | Datei | Inhalt |
 |-------|--------|
 | `ADMBw-Knowledge-Stereotypes.md` | **318 Katalog-Stereotype** (293 nutzbar · 25 abstrakt 🔒); Toolboxen/Artefakte sind nicht enthalten |
 | `ADMBw-Knowledge-Viewpoints.md` | **52 Viewpoints** mit MDG-Beschreibung (keine erfundenen Properties) |
 | `ADMBw-Knowledge-Topology.md` | **133 vollständige Kanten-Regeln** (Quelle/Ziel über client/source/end[0] bzw. supplier/target/end[1]) + 70 reine Rollen-Beschränkungen |
+| `ADMBw-Knowledge-TagTypes.md` | **27 Property-Typen** (Tagged-Value-Definitionen) |
 | `ADMBw-Knowledge-Connectors.md` | EA-Metatypen + Connector-Übersicht (kuratiert) |
 
 > **KB-Sync-Status (2026-10-19): aktuell.** Neu erzeugt aus `eam-mdg-parser` (`b906f51`), identisch in Extractor und Batch; Hashes in `checks/deterministic-checks.json`.
@@ -118,7 +119,7 @@ Vier Knowledge-Dateien (in OpenWebUI als RAG-Wissen eingebunden), generiert vom 
 ## 🔧 Einrichtung (OpenWebUI)
 
 1. **Modell anlegen** → Inhalt von `system_prompt.md` ins Feld **System Prompt**
-2. **Knowledge** → Vier `ADMBw-Knowledge-*.md`-Dateien hochladen und verknüpfen
+2. **Knowledge** → Vier MDG-generierte `ADMBw-Knowledge-*.md`-Dateien plus `ADMBw-Knowledge-Connectors.md` hochladen und verknüpfen
 3. Fertig. Erste Nachricht: Prosa-Dokument einfügen oder: *„Extrahiere ADMBw-Knoten und Kanten aus folgendem Text: …"*
 
 ---
@@ -143,7 +144,7 @@ Vier Knowledge-Dateien (in OpenWebUI als RAG-Wissen eingebunden), generiert vom 
 | `examples/batch-schema.json` | Verbindliches JSON-Schema (identisch im Prompt eingebettet) |
 | `examples/output-example.json` | Beispiel-JSON-Batch (schema- und KB-valide) |
 | `checks/verify.py` | Deterministische Prüfungen (ohne LLM) |
-| `ADMBw-Knowledge-*.md` | Vier Knowledge-Dateien (s. o.) |
+| `ADMBw-Knowledge-*.md` | Vier MDG-generierte Knowledge-Dateien + Connectors (s. o.) |
 
 ---
 
