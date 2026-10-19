@@ -1,0 +1,205 @@
+{
+  "kb": {
+    "stereotypes": {
+      "rows": 443,
+      "toolbox": 124,
+      "abstract": 25,
+      "usable": 293,
+      "catalog": 318,
+      "junk": 1
+    },
+    "topology": {
+      "rows": 203,
+      "complete_rules": 114,
+      "roles_only": 89
+    },
+    "viewpoints": 52,
+    "hashes": {
+      "ADMBw-Knowledge-Stereotypes.md": {
+        "sha256": "5dc4ff0a12e01f2cf458fd1edd92599140d2708558b23fbf930d59fb9ec2a7d9",
+        "bytes": 60879
+      },
+      "ADMBw-Knowledge-Topology.md": {
+        "sha256": "d3c91d3fdf536ab701b6162e7244e6ac021153f22fd08037fb2538b008b9d716",
+        "bytes": 16165
+      },
+      "ADMBw-Knowledge-Viewpoints.md": {
+        "sha256": "c2ba33db45a9b98ba030806967076e4f8b396b981eba4d511a9c85300664cda5",
+        "bytes": 13497
+      },
+      "ADMBw-Knowledge-Connectors.md": {
+        "sha256": "4699343e8079315cb029ccd532287de9093c9ac3ee92dd6be3053dd72b7fa749",
+        "bytes": 6680
+      }
+    }
+  },
+  "schema": {
+    "prompt_matches_file": true,
+    "example_errors": []
+  },
+  "example": {
+    "nodes": 6,
+    "edges": 4,
+    "edges_kb_pass": 4,
+    "metadata_node_count": 6,
+    "metadata_edge_count": 4
+  },
+  "checks": [
+    {
+      "name": "Stereotypes: 443 Tabellenzeilen",
+      "ok": true,
+      "detail": "ist 443"
+    },
+    {
+      "name": "Stereotypes: 124 ToolboxPage-Einträge",
+      "ok": true,
+      "detail": "ist 124"
+    },
+    {
+      "name": "Stereotypes: 25 abstrakte Basisklassen (🔒)",
+      "ok": true,
+      "detail": "ist 25"
+    },
+    {
+      "name": "Stereotypes: 1 Nicht-Stereotyp (L2-Operational Constraints)",
+      "ok": true,
+      "detail": "ist 1"
+    },
+    {
+      "name": "Stereotypes: 293 nutzbare",
+      "ok": true,
+      "detail": "ist 293"
+    },
+    {
+      "name": "Stereotypes: 318 Katalog (ohne ToolboxPage/Artefakt)",
+      "ok": true,
+      "detail": "ist 318"
+    },
+    {
+      "name": "Stereotypes: Header nennt 318 Katalog",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "Topology: 203 Zeilen",
+      "ok": true,
+      "detail": "ist 203"
+    },
+    {
+      "name": "Topology: 114 Regeln mit beiden Enden",
+      "ok": true,
+      "detail": "ist 114"
+    },
+    {
+      "name": "Topology: 89 reine Rollen-Zeilen",
+      "ok": true,
+      "detail": "ist 89"
+    },
+    {
+      "name": "Topology: Lesart 'client = Quelle (Source), supplier = Ziel (Target)'",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "Viewpoints: 52 Überschriften",
+      "ok": true,
+      "detail": "ist 52"
+    },
+    {
+      "name": "Viewpoints: 'Business Process'-Artefakt entfernt",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "Connectors: Dependency (100)",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "Connectors: Class (68)",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "Connectors: Activity (6)",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "Connectors: Connector (3)",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "Connectors: 52 Viewpoints",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "Hashes: vier KB-Dateien berechnet",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "Schema: erstes ```json-Block im Prompt gefunden",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "Schema: Prompt-Block == examples/batch-schema.json",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "Beispiel: 0 jsonschema-Fehler",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "metadata.node_count == len(nodes)",
+      "ok": true,
+      "detail": "6 != 6"
+    },
+    {
+      "name": "metadata.edge_count == len(edges)",
+      "ok": true,
+      "detail": "4 != 4"
+    },
+    {
+      "name": "Node-IDs eindeutig",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "Edge-IDs eindeutig",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "Alle source_id/target_id referenzieren Nodes",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "metadata.generator korrekt",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "metadata.standard korrekt",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "Beispiel: alle Nodes KB-konform (nutzbar, AppliesTo==metaclass, label)",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "Beispiel: alle 4 Kanten Topologie-PASS (exakter Match)",
+      "ok": true,
+      "detail": ""
+    }
+  ],
+  "all_pass": true
+}

@@ -1,10 +1,10 @@
 {
   "metadata": {
-    "generator": "ADMBw-Batch-Generator v1.0",
+    "generator": "ADMBw-Batch-Generator v2.0",
     "standard": "ADMBw v2026.05",
-    "source_document": "Einsatzführung_Soll-Konzept_v2.txt",
-    "description": "Extraktion der Capability- und Rollenstruktur aus dem Soll-Konzept Einsatzführung",
-    "node_count": 5,
+    "source_document": "einsatzfuehrung.txt",
+    "description": "Capability- und Servicestruktur Einsatzführung",
+    "node_count": 6,
     "edge_count": 4
   },
   "nodes": [
@@ -20,12 +20,12 @@
     },
     {
       "id": "n2",
-      "name": "Gefechtsstand",
-      "stereotype": "OperationalPerformer",
+      "name": "Vernetzte Operationsführung",
+      "stereotype": "Capability",
       "metaclass": "Class",
-      "labels": ["OperationalPerformer"],
+      "labels": ["Capability"],
       "properties": {
-        "Nationality": "DEU"
+        "AbstractionLevel": "Operational"
       }
     },
     {
@@ -40,57 +40,65 @@
     },
     {
       "id": "n4",
-      "name": "Führungsfähigkeit sicherstellen",
-      "stereotype": "StrategicConstraint",
-      "metaclass": "Class",
-      "labels": ["StrategicConstraint"],
-      "properties": {}
-    },
-    {
-      "id": "n5",
       "name": "FüInfoSys",
       "stereotype": "ServiceSpecification",
       "metaclass": "Class",
       "labels": ["ServiceSpecification"],
       "properties": {
-        "Critical service": "true"
+        "SecurityClassification": "VS-NfD"
       }
+    },
+    {
+      "id": "n5",
+      "name": "Lagefusion durchführen",
+      "stereotype": "ServiceFunctionAction",
+      "metaclass": "Action",
+      "labels": ["ServiceFunctionAction"],
+      "properties": {}
+    },
+    {
+      "id": "n6",
+      "name": "FüInfoSys Kern",
+      "stereotype": "ServiceSpecification",
+      "metaclass": "Class",
+      "labels": ["ServiceSpecification"],
+      "properties": {}
     }
   ],
   "edges": [
     {
       "id": "e1",
-      "source_id": "n2",
-      "target_id": "n1",
-      "type": "EXHIBITS",
-      "connector": "Exhibits",
-      "metaclass": "Abstraction",
-      "properties": {}
-    },
-    {
-      "id": "e2",
-      "source_id": "n2",
-      "target_id": "n3",
-      "type": "PERFORMS_IN_CONTEXT",
-      "connector": "PerformsInContext",
-      "metaclass": "Abstraction",
-      "properties": {}
-    },
-    {
-      "id": "e3",
       "source_id": "n1",
-      "target_id": "n4",
-      "type": "SATISFY",
-      "connector": "Satisfy",
+      "target_id": "n2",
+      "connector": "CapabilityDependency",
+      "type": "CAPABILITY_DEPENDENCY",
       "metaclass": "Dependency",
       "properties": {}
     },
     {
-      "id": "e4",
-      "source_id": "n5",
+      "id": "e2",
+      "source_id": "n3",
       "target_id": "n4",
-      "type": "SATISFY",
-      "connector": "Satisfy",
+      "connector": "ActivitySupportsService",
+      "type": "ACTIVITY_SUPPORTS_SERVICE",
+      "metaclass": "Realisation",
+      "properties": {}
+    },
+    {
+      "id": "e3",
+      "source_id": "n4",
+      "target_id": "n5",
+      "connector": "IsCapableToPerform",
+      "type": "IS_CAPABLE_TO_PERFORM",
+      "metaclass": "Abstraction",
+      "properties": {}
+    },
+    {
+      "id": "e4",
+      "source_id": "n4",
+      "target_id": "n6",
+      "connector": "ServiceDependency",
+      "type": "SERVICE_DEPENDENCY",
       "metaclass": "Dependency",
       "properties": {}
     }
