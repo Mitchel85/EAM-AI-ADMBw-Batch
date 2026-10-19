@@ -86,10 +86,10 @@ def main():
     complete = [r for r in tp if r[1] and r[2]]
     roles_only = [r for r in tp if not (r[1] and r[2])]
     check("Topology: 203 Zeilen", len(tp) == 203, f"ist {len(tp)}")
-    check("Topology: 114 Regeln mit beiden Enden", len(complete) == 114, f"ist {len(complete)}")
-    check("Topology: 89 reine Rollen-Zeilen", len(roles_only) == 89, f"ist {len(roles_only)}")
-    check("Topology: Lesart 'client = Quelle (Source), supplier = Ziel (Target)'",
-          "client = Quelle (Source), supplier = Ziel (Target)" in tp_text)
+    check("Topology: 133 Regeln mit beiden Enden", len(complete) == 133, f"ist {len(complete)}")
+    check("Topology: 70 reine Rollen-Zeilen", len(roles_only) == 70, f"ist {len(roles_only)}")
+    check("Topology: Lesart 'Quelle = client/source/end[0]/informationSource'",
+          "client, source, end[0].role oder informationSource" in tp_text)
 
     vp_headings = [l for l in vp_text.splitlines() if l.startswith("## ")]
     check("Viewpoints: 52 Überschriften", len(vp_headings) == 52, f"ist {len(vp_headings)}")
@@ -169,7 +169,9 @@ def main():
             continue
         src = next(n for n in nodes if n["id"] == e["source_id"])
         tgt = next(n for n in nodes if n["id"] == e["target_id"])
-        if src["stereotype"] != rule[1] or tgt["stereotype"] != rule[2]:
+        src_allowed = [x.strip() for x in rule[1].split(",") if x.strip()]
+        tgt_allowed = [x.strip() for x in rule[2].split(",") if x.strip()]
+        if src["stereotype"] not in src_allowed or tgt["stereotype"] not in tgt_allowed:
             edge_fail.append(
                 f"{e['id']}: {src['stereotype']}→{e['connector']}→{tgt['stereotype']} "
                 f"vs. Regel {rule[1]}→{rule[0]}→{rule[2]}")

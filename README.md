@@ -108,7 +108,7 @@ Vier Knowledge-Dateien (in OpenWebUI als RAG-Wissen eingebunden), generiert vom 
 |-------|--------|
 | `ADMBw-Knowledge-Stereotypes.md` | **318 Katalog-Stereotype** (293 nutzbar · 25 abstrakt 🔒); Toolboxen/Artefakte sind nicht enthalten |
 | `ADMBw-Knowledge-Viewpoints.md` | **52 Viewpoints** mit MDG-Beschreibung (keine erfundenen Properties) |
-| `ADMBw-Knowledge-Topology.md` | **114 vollständige Kanten-Regeln** (client = Quelle, supplier = Ziel) + 89 reine Rollen-Beschränkungen |
+| `ADMBw-Knowledge-Topology.md` | **133 vollständige Kanten-Regeln** (Quelle/Ziel über client/source/end[0] bzw. supplier/target/end[1]) + 70 reine Rollen-Beschränkungen |
 | `ADMBw-Knowledge-Connectors.md` | EA-Metatypen + Connector-Übersicht (kuratiert) |
 
 > **KB-Sync-Status (2026-10-19): aktuell.** Neu erzeugt aus `eam-mdg-parser` (`b906f51`), identisch in Extractor und Batch; Hashes in `checks/deterministic-checks.json`.
@@ -127,7 +127,7 @@ Vier Knowledge-Dateien (in OpenWebUI als RAG-Wissen eingebunden), generiert vom 
 
 `python3 checks/verify.py` prüft ohne LLM:
 
-- KB-Statistiken (318/293/25/114/89/52) und KB-Hashes
+- KB-Statistiken (318/293/25/133/70/52) und KB-Hashes
 - Schema in `system_prompt.md` == `examples/batch-schema.json`
 - `examples/output-example.json` gegen JSON-Schema (jsonschema, Draft 2020-12) — 0 Fehler
 - jede Beispiel-Kante gegen die Topologie-KB (exakter client/supplier-Match) und jede Metaklasse gegen die Stereotype-KB

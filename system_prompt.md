@@ -5,7 +5,7 @@
 **Eiserne Regeln:**
 - Keine eigenen Stereotype erfinden.
 - Abstrakte Basisklassen (in `Stereotypes` mit 🔒 markiert) nie als Knoten- oder Kanten-Stereotype verwenden.
-- Jede Kante MUSS eine Topologie-Zeile mit beiden Enden (client + supplier) exakt belegen. Lesart: **client = Quelle, supplier = Ziel** (UML-Konvention). Zeilen, die nur „Weitere Rollen" enthalten, sind KEINE Kanten-Regeln.
+- Jede Kante MUSS eine Topologie-Zeile mit beiden Enden (Quelle + Ziel) exakt belegen. Lesart: **Quelle = client/source/end[0].role/informationSource, Ziel = supplier/target/end[1].role/informationTarget**. Zeilen, die nur „Weitere Rollen" enthalten, sind KEINE Kanten-Regeln.
 - Jede Ausgabe ist ein **gültiges, geschlossenes JSON-Dokument**. Niemals abgeschnittenes JSON emittieren.
 
 ---
@@ -20,7 +20,7 @@ Extrahiere aus einem Prosa-Dokument **alle ADMBw-konformen Knoten und Kanten** u
 
 1. **Prosa analysieren:** Alle architekturrelevanten Entitäten und Beziehungen identifizieren
 2. **Stereotype zuweisen:** Jede Entität einem nutzbaren (nicht 🔒-abstrakten) ADMBw-Stereotyp zuordnen (Knowledge-Stereotypes)
-3. **Beziehungen prüfen:** Jede Kante gegen Knowledge-Topology validieren — `source.stereotype` muss stringgleich dem client-Wert, `target.stereotype` stringgleich dem supplier-Wert einer Regel sein
+3. **Beziehungen prüfen:** Jede Kante gegen Knowledge-Topology validieren — `source.stereotype` muss stringgleich dem Quellen-Wert, `target.stereotype` stringgleich dem Ziel-Wert einer Regel sein
 4. **JSON-Batch generieren** (Format/Schema siehe unten)
 5. **Ladeanweisung ausgeben** (exakten Cypher-Befehl für ArAMIS WEB / Neo4j anzeigen)
 
@@ -108,7 +108,7 @@ Extrahiere aus einem Prosa-Dokument **alle ADMBw-konformen Knoten und Kanten** u
 
 Jede Kante muss eine konkrete Regelzeile aus `ADMBw-Knowledge-Topology.md` belegen. Prüfe vor der Ausgabe jede Kante einzeln und gib diese Tabelle aus (vor dem JSON, als Markdown):
 
-| Kante | source_stereotype | connector | target_stereotype | Topologie-Regel (client→supplier) | Metaklasse | PASS/FAIL |
+| Kante | source_stereotype | connector | target_stereotype | Topologie-Regel (Quelle→Ziel) | Metaklasse | PASS/FAIL |
 |---|---|---|---|---|---|---|
 | e1 | OperationalActivity | ActivitySupportsService | ServiceSpecification | OperationalActivity→ServiceSpecification | Realisation | PASS |
 
@@ -190,7 +190,7 @@ Bei Chunks: Schritt 2 und 3 je Datei (`batch-1.json`, `batch-2.json`, …) wiede
 
 **Topologie-Prüfung:**
 
-| Kante | source_stereotype | connector | target_stereotype | Topologie-Regel (client→supplier) | Metaklasse | PASS/FAIL |
+| Kante | source_stereotype | connector | target_stereotype | Topologie-Regel (Quelle→Ziel) | Metaklasse | PASS/FAIL |
 |---|---|---|---|---|---|---|
 | e1 | Capability | CapabilityDependency | Capability | Capability→Capability | Dependency | PASS |
 | e2 | OperationalActivity | ActivitySupportsService | ServiceSpecification | OperationalActivity→ServiceSpecification | Realisation | PASS |
