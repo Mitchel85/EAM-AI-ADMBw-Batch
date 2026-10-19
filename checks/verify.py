@@ -74,10 +74,10 @@ def main():
     usable = [r for r in st if r[3] not in ("", "ToolboxPage")]
     catalog = [r for r in st if r[3] != "ToolboxPage" and r[0] != "L2-Operational Constraints"]
 
-    check("Stereotypes: 443 Tabellenzeilen", len(st) == 443, f"ist {len(st)}")
-    check("Stereotypes: 124 ToolboxPage-Einträge", len(toolbox) == 124, f"ist {len(toolbox)}")
+    check("Stereotypes: 318 Tabellenzeilen", len(st) == 318, f"ist {len(st)}")
+    check("Stereotypes: 0 ToolboxPage-Einträge", len(toolbox) == 0, f"ist {len(toolbox)}")
     check("Stereotypes: 25 abstrakte Basisklassen (🔒)", len(abstract) == 25, f"ist {len(abstract)}")
-    check("Stereotypes: 1 Nicht-Stereotyp (L2-Operational Constraints)", len(junk) == 1, f"ist {len(junk)}")
+    check("Stereotypes: 0 Nicht-Stereotype/Artefakte", len(junk) == 0, f"ist {len(junk)}")
     check("Stereotypes: 293 nutzbare", len(usable) == 293, f"ist {len(usable)}")
     check("Stereotypes: 318 Katalog (ohne ToolboxPage/Artefakt)", len(catalog) == 318, f"ist {len(catalog)}")
     check("Stereotypes: Header nennt 318 Katalog", "318 Katalog-Stereotype" in st_text)
