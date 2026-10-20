@@ -1,4 +1,4 @@
-# ADMBw-Batch-Generator v2.0
+# ADMBw-Batch-Generator v2.1
 
 ![Status](https://img.shields.io/badge/Status-Active-success)
 ![Standard](https://img.shields.io/badge/Standard-MDG%202026.05-blue)
@@ -16,8 +16,8 @@ KI-gestützter Agent zur Extraktion von ADMBw-konformen **Knoten und Kanten** au
 | Schritt | Beschreibung |
 |---------|-------------|
 | 1. Prosa-Analyse | Architekturrelevante Entitäten im Text identifizieren |
-| 2. Stereotyp-Mapping | Jede Entität einem nutzbaren ADMBw-Stereotyp zuweisen (keine 🔒-abstrakten Basisklassen) |
-| 3. Beziehungs-Extraktion | Kanten gemäß Topology-Regeln ableiten (client = Quelle, supplier = Ziel) |
+| 2. Stereotyp-Mapping | Jede Entität einem **konkreten** ADMBw-Stereotyp zuweisen (kein 🔒) |
+| 3. Beziehungs-Extraktion | Kanten gemäß Topology-Regeln ableiten (client = Quelle, supplier = Ziel); abstrakte Endpunkte werden auf konkrete Subtypen aufgelöst |
 | 4. JSON-Batch | Strukturierte Ausgabe mit `nodes[]` und `edges[]`, jede Kante KB-belegt |
 | 5. Ladeanweisung | Exakter Cypher-Befehl für ArAMIS WEB / Neo4j |
 
@@ -27,7 +27,7 @@ KI-gestützter Agent zur Extraktion von ADMBw-konformen **Knoten und Kanten** au
 
 ```json
 {
-  "metadata": { "generator": "ADMBw-Batch-Generator v2.0", "node_count": 6, "edge_count": 4 },
+  "metadata": { "generator": "ADMBw-Batch-Generator v2.1", "node_count": 6, "edge_count": 4 },
   "nodes": [
     { "id": "n1", "name": "...", "stereotype": "Capability", "metaclass": "Class", "labels": ["Capability"], "properties": {} }
   ],
@@ -111,6 +111,8 @@ Vier MDG-generierte Knowledge-Dateien (in OpenWebUI als RAG-Wissen eingebunden),
 | `ADMBw-Knowledge-Topology.md` | **133 vollständige Kanten-Regeln** (Quelle/Ziel über client/source/end[0] bzw. supplier/target/end[1]) + 70 reine Rollen-Beschränkungen |
 | `ADMBw-Knowledge-TagTypes.md` | **27 Property-Typen** (Tagged-Value-Definitionen) |
 | `ADMBw-Knowledge-Connectors.md` | EA-Metatypen + Connector-Übersicht (kuratiert) |
+| `ADMBw-Stereotypes.json` | Maschinenlesbarer Katalog mit `abstract` und `concreteDescendants` |
+| `ADMBw-Aliases.json` | Schreibvarianten → kanonischer Name |
 
 > **KB-Sync-Status (2026-10-19): aktuell.** Vier MDG-Dateien neu erzeugt aus `eam-mdg-parser` (`9470931`), identisch in Extractor und Batch; Tag-Typen und Hashes in `checks/deterministic-checks.json`.
 
@@ -119,7 +121,7 @@ Vier MDG-generierte Knowledge-Dateien (in OpenWebUI als RAG-Wissen eingebunden),
 ## 🔧 Einrichtung (OpenWebUI)
 
 1. **Modell anlegen** → Inhalt von `system_prompt.md` ins Feld **System Prompt**
-2. **Knowledge** → Vier MDG-generierte `ADMBw-Knowledge-*.md`-Dateien plus `ADMBw-Knowledge-Connectors.md` hochladen und verknüpfen
+2. **Knowledge** → Vier MDG-generierte `ADMBw-Knowledge-*.md`-Dateien, `ADMBw-Knowledge-Connectors.md` und beide JSON-Dateien hochladen und verknüpfen
 3. Fertig. Erste Nachricht: Prosa-Dokument einfügen oder: *„Extrahiere ADMBw-Knoten und Kanten aus folgendem Text: …"*
 
 ---
@@ -131,7 +133,7 @@ Vier MDG-generierte Knowledge-Dateien (in OpenWebUI als RAG-Wissen eingebunden),
 - KB-Statistiken (318/293/25/133/70/52) und KB-Hashes
 - Schema in `system_prompt.md` == `examples/batch-schema.json`
 - `examples/output-example.json` gegen JSON-Schema (jsonschema, Draft 2020-12) — 0 Fehler
-- jede Beispiel-Kante gegen die Topologie-KB (exakter client/supplier-Match) und jede Metaklasse gegen die Stereotype-KB
+- jede Beispiel-Kante gegen die Topologie-KB (exakter Match oder konkreter Subtyp eines erlaubten abstrakten Endpunkts) und jede Metaklasse gegen die Stereotype-KB
 - `node_count`/`edge_count` == Array-Längen, IDs eindeutig, Referenzen gültig
 
 ---

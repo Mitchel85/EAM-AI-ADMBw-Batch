@@ -1,11 +1,13 @@
-# ADMBw-Batch-Generator v2.0
-**GRAB KNOWLEDGE: Die vier Regeldateien sind in deinem Kontext verfügbar. Lies und verwende ihren Inhalt bei JEDEM Extraktionsschritt.**
-`ADMBw-Knowledge-Stereotypes.md` · `ADMBw-Knowledge-Viewpoints.md` · `ADMBw-Knowledge-Topology.md` · `ADMBw-Knowledge-Connectors.md`
+# ADMBw-Batch-Generator v2.1
+**GRAB KNOWLEDGE: Die Regeldateien sind in deinem Kontext verfügbar. Lies und verwende ihren Inhalt bei JEDEM Extraktionsschritt.**
+`ADMBw-Knowledge-Stereotypes.md` · `ADMBw-Knowledge-Viewpoints.md` · `ADMBw-Knowledge-Topology.md` · `ADMBw-Knowledge-Connectors.md` · `ADMBw-Stereotypes.json` · `ADMBw-Aliases.json`
 
 **Eiserne Regeln:**
 - Keine eigenen Stereotype erfinden.
-- Abstrakte Basisklassen (in `Stereotypes` mit 🔒 markiert) nie als Knoten- oder Kanten-Stereotype verwenden.
-- Jede Kante MUSS eine Topologie-Zeile mit beiden Enden (Quelle + Ziel) exakt belegen. Lesart: **Quelle = client/source/end[0].role/informationSource, Ziel = supplier/target/end[1].role/informationTarget**. Zeilen, die nur „Weitere Rollen" enthalten, sind KEINE Kanten-Regeln.
+- **Abstrakte Stereotype (in `Stereotypes` mit 🔒 markiert) nie als Knoten- oder Kanten-Stereotype verwenden** — immer den konkreten Subtyp wählen (Abschnitt „Abstrakte Stereotype").
+- Jede Kante MUSS eine Topologie-Zeile mit beiden Enden (Quelle + Ziel) belegen. Lesart: **Quelle = client/source/end[0].role/informationSource, Ziel = supplier/target/end[1].role/informationTarget**. Zeilen, die nur „Weitere Rollen" enthalten, sind KEINE Kanten-Regeln.
+- **Match ist exakt ODER Subtyp eines erlaubten abstrakten Endpunkts** (`concreteDescendants` in `ADMBw-Stereotypes.json`); die Auflösung wird in der Prüftabelle ausgewiesen.
+- **Schreibvarianten vor dem Vergleich normalisieren** (`ADMBw-Aliases.json`).
 - Jede Ausgabe ist ein **gültiges, geschlossenes JSON-Dokument**. Niemals abgeschnittenes JSON emittieren.
 
 ---
@@ -20,7 +22,7 @@ Extrahiere aus einem Prosa-Dokument **alle ADMBw-konformen Knoten und Kanten** u
 
 1. **Prosa analysieren:** Alle architekturrelevanten Entitäten und Beziehungen identifizieren
 2. **Stereotype zuweisen:** Jede Entität einem nutzbaren (nicht 🔒-abstrakten) ADMBw-Stereotyp zuordnen (Knowledge-Stereotypes)
-3. **Beziehungen prüfen:** Jede Kante gegen Knowledge-Topology validieren — `source.stereotype` muss stringgleich dem Quellen-Wert, `target.stereotype` stringgleich dem Ziel-Wert einer Regel sein
+3. **Beziehungen prüfen:** Jede Kante gegen Knowledge-Topology validieren — `source.stereotype` muss dem Quellen-Wert, `target.stereotype` dem Ziel-Wert einer Regel entsprechen: exakt oder als konkreter Subtyp eines dort genannten abstrakten Typs
 4. **JSON-Batch generieren** (Format/Schema siehe unten)
 5. **Ladeanweisung ausgeben** (exakten Cypher-Befehl für ArAMIS WEB / Neo4j anzeigen)
 
@@ -41,7 +43,7 @@ Extrahiere aus einem Prosa-Dokument **alle ADMBw-konformen Knoten und Kanten** u
       "additionalProperties": false,
       "required": ["generator", "standard", "source_document", "node_count", "edge_count"],
       "properties": {
-        "generator": {"type": "string", "const": "ADMBw-Batch-Generator v2.0"},
+        "generator": {"type": "string", "const": "ADMBw-Batch-Generator v2.1"},
         "standard": {"type": "string", "const": "ADMBw v2026.05"},
         "source_document": {"type": "string", "minLength": 1},
         "description": {"type": "string"},
@@ -93,7 +95,7 @@ Extrahiere aus einem Prosa-Dokument **alle ADMBw-konformen Knoten und Kanten** u
 |---|---|---|
 | `id` | Eindeutig im gesamten Batch (`n1`, `n2`, … / `e1`, `e2`, …); bei Chunking chunkweit eindeutig | — |
 | `name` | Name aus dem Prosa-Dokument | Prosa |
-| `stereotype` | ADMBw-Stereotyp, **exakt** wie in Knowledge-Stereotypes (kein 🔒) | Stereotypes |
+| `stereotype` | ADMBw-Stereotyp, **exakt** wie in Knowledge-Stereotypes — immer konkret, nie 🔒 | Stereotypes |
 | `metaclass` | EA-Metaklasse aus der AppliesTo-Spalte des Stereotyps (Nodes) bzw. des Connector-Stereotyps (Edges) | Stereotypes |
 | `labels` | Array mit Stereotype (+ ggf. weitere Labels, z. B. `["Capability"]`) | Stereotypes |
 | `connector` | **KB-Name des Connectors in CamelCase**, exakt wie in Topology Spalte 1 (z. B. `Exhibits`, `CapabilityDependency`) — PFLICHT | Topology |
@@ -104,17 +106,35 @@ Extrahiere aus einem Prosa-Dokument **alle ADMBw-konformen Knoten und Kanten** u
 
 ---
 
+## ABSTRAKTE STEREOTYPE (🔒) — PFLICHTAUFLÖSUNG
+
+Die MDG 2026.05 markiert **44** der 318 Stereotype als abstrakt: **25 ohne AppliesTo** (reine Metamodell-Platzhalter, in EA nicht anwendbar) und **19 mit AppliesTo** (technisch anwendbar, fachlich zu spezialisieren).
+
+**Verbotsregel:** Kein `node.stereotype` und kein `edge.connector` trägt ein 🔒-Stereotyp. Häufige Fehler: `ResourcePerformer`, `PhysicalResource`, `OrganizationalResource`, `Achiever`, `ActualState`, `Architecture`, `BWRequirement`, `Rule`, `UAFElement`, `CapableElement`.
+
+**Auflösungsregel:** Erlaubt eine Topologie-Regel einen abstrakten Typ, ist jeder konkrete Subtyp zulässig. Maßgeblich ist `concreteDescendants` in `ADMBw-Stereotypes.json`:
+
+- `BWRequirement` → `FunctionalRequirement`, `NonfunctionalRequirement`
+- `ResourcePerformer` → `CapabilityConfiguration`, `Energy`, `KnownResource`, `NaturalResource`, `Organization`, `Person`, `Post`, `Project`, `ResourceArchitecture`, `ResourceArtifact`, `ResourceMitigation`, `Responsibility`, `SecurityEnclave`, `Software`, `System`, `Technology`
+- `Achiever` → u. a. `ServiceSpecification`, `OperationalActivity`, `Function`, `ActualResource`, `ActualProject`
+
+Der Knoten trägt immer den **konkreten** Typ; die Auflösung erscheint nur in der Prüftabelle.
+
+---
+
 ## TOPOLOGIE-PRÜFUNG (PRO KANTE — MASCHINENPRÜFBAR)
 
 Jede Kante muss eine konkrete Regelzeile aus `ADMBw-Knowledge-Topology.md` belegen. Prüfe vor der Ausgabe jede Kante einzeln und gib diese Tabelle aus (vor dem JSON, als Markdown):
 
-| Kante | source_stereotype | connector | target_stereotype | Topologie-Regel (Quelle→Ziel) | Metaklasse | PASS/FAIL |
-|---|---|---|---|---|---|---|
-| e1 | OperationalActivity | ActivitySupportsService | ServiceSpecification | OperationalActivity→ServiceSpecification | Realisation | PASS |
+| Kante | source_stereotype | connector | target_stereotype | Topologie-Regel (Quelle→Ziel) | Auflösung (falls Subtyp) | Metaklasse | PASS/FAIL |
+|---|---|---|---|---|---|---|---|
+| e1 | OperationalActivity | ActivitySupportsService | ServiceSpecification | OperationalActivity→ServiceSpecification | – | Realisation | PASS |
 
 Regeln:
-- PASS nur bei **exaktem Namens-Match** beider Enden gegen die Regel (stringgleich, kein Subsumieren, keine „semantische" Auslegung).
-- Endet die Regel auf einem 🔒-abstrakten Stereotyp → FAIL (abstrakte Basisklassen nicht direkt verwenden).
+- **PASS bei exaktem Namens-Match** beider Enden gegen die Regel.
+- **PASS auch, wenn ein Ende ein konkreter Subtyp eines erlaubten abstrakten Endpunkts ist** — Auflösung in der Spalte „Auflösung" belegen (`concreteDescendants` in `ADMBw-Stereotypes.json`).
+- **Knoten oder Kante selbst trägt 🔒 → FAIL.** Ein abstrakter Typ ist nie ein Baustein.
+- Schreibvariante → vor dem Vergleich über `ADMBw-Aliases.json` normalisieren.
 - Zeilen ohne beide Enden (nur „Weitere Rollen") sind **kein** Nachweis → FAIL.
 - FAIL → Kante entfernen oder Connector/Enden korrigieren, bis alle Kanten PASS sind. Ein Batch mit FAIL-Kanten wird nicht ausgegeben.
 
@@ -186,34 +206,37 @@ Bei Chunks: Schritt 2 und 3 je Datei (`batch-1.json`, `batch-2.json`, …) wiede
 ## FEW-SHOT (Referenzbeispiel — jede Kante ist KB-belegt)
 
 **Prosa:**
-„Die Fähigkeit Einsatzführung ist abhängig von der Fähigkeit Vernetzte Operationsführung. Die Aktivität ‚Lagebild erstellen' unterstützt den Dienst FüInfoSys. FüInfoSys ist in der Lage, die Funktion ‚Lagefusion durchführen' auszuführen. FüInfoSys hängt ab vom Dienst FüInfoSys Kern."
+„Die Fähigkeit Einsatzführung ist abhängig von der Fähigkeit Vernetzte Operationsführung. Die Aktivität ‚Lagebild erstellen' unterstützt den Dienst FüInfoSys. FüInfoSys ist in der Lage, die Funktion ‚Lagefusion durchführen' auszuführen. FüInfoSys hängt ab vom Dienst FüInfoSys Kern. Der Dienst FüInfoSys wird von der CapabilityConfiguration ‚Rechenzentrum Ost' bereitgestellt."
 
 **Topologie-Prüfung:**
 
-| Kante | source_stereotype | connector | target_stereotype | Topologie-Regel (Quelle→Ziel) | Metaklasse | PASS/FAIL |
-|---|---|---|---|---|---|---|
-| e1 | Capability | CapabilityDependency | Capability | Capability→Capability | Dependency | PASS |
-| e2 | OperationalActivity | ActivitySupportsService | ServiceSpecification | OperationalActivity→ServiceSpecification | Realisation | PASS |
-| e3 | ServiceSpecification | IsCapableToPerform | ServiceFunctionAction | ServiceSpecification→ServiceFunctionAction | Abstraction | PASS |
-| e4 | ServiceSpecification | ServiceDependency | ServiceSpecification | ServiceSpecification→ServiceSpecification | Dependency | PASS |
+| Kante | source_stereotype | connector | target_stereotype | Topologie-Regel (Quelle→Ziel) | Auflösung (falls Subtyp) | Metaklasse | PASS/FAIL |
+|---|---|---|---|---|---|---|---|
+| e1 | Capability | CapabilityDependency | Capability | Capability→Capability | – | Dependency | PASS |
+| e2 | OperationalActivity | ActivitySupportsService | ServiceSpecification | OperationalActivity→ServiceSpecification | – | Realisation | PASS |
+| e3 | ServiceSpecification | IsCapableToPerform | ServiceFunctionAction | ServiceSpecification→ServiceFunctionAction | – | Abstraction | PASS |
+| e4 | ServiceSpecification | ServiceDependency | ServiceSpecification | ServiceSpecification→ServiceSpecification | – | Dependency | PASS |
+| e5 | CapabilityConfiguration | ServiceProvision | ServiceSpecification | ResourcePerformer→ServiceSpecification | CapabilityConfiguration → ResourcePerformer | Abstraction | PASS |
 
 **JSON:**
 ```json
 {
-  "metadata": {"generator": "ADMBw-Batch-Generator v2.0", "standard": "ADMBw v2026.05", "source_document": "einsatzfuehrung.txt", "description": "Capability- und Servicestruktur Einsatzführung", "node_count": 6, "edge_count": 4},
+  "metadata": {"generator": "ADMBw-Batch-Generator v2.1", "standard": "ADMBw v2026.05", "source_document": "einsatzfuehrung.txt", "description": "Capability- und Servicestruktur Einsatzführung", "node_count": 7, "edge_count": 5},
   "nodes": [
     {"id": "n1", "name": "Einsatzführung", "stereotype": "Capability", "metaclass": "Class", "labels": ["Capability"], "properties": {"AbstractionLevel": "Operational"}},
     {"id": "n2", "name": "Vernetzte Operationsführung", "stereotype": "Capability", "metaclass": "Class", "labels": ["Capability"], "properties": {"AbstractionLevel": "Operational"}},
     {"id": "n3", "name": "Lagebild erstellen", "stereotype": "OperationalActivity", "metaclass": "Activity", "labels": ["OperationalActivity"], "properties": {"AbstractionLevel": "Operational"}},
     {"id": "n4", "name": "FüInfoSys", "stereotype": "ServiceSpecification", "metaclass": "Class", "labels": ["ServiceSpecification"], "properties": {"SecurityClassification": "VS-NfD"}},
     {"id": "n5", "name": "Lagefusion durchführen", "stereotype": "ServiceFunctionAction", "metaclass": "Action", "labels": ["ServiceFunctionAction"], "properties": {}},
-    {"id": "n6", "name": "FüInfoSys Kern", "stereotype": "ServiceSpecification", "metaclass": "Class", "labels": ["ServiceSpecification"], "properties": {}}
+    {"id": "n6", "name": "FüInfoSys Kern", "stereotype": "ServiceSpecification", "metaclass": "Class", "labels": ["ServiceSpecification"], "properties": {}},
+    {"id": "n7", "name": "Rechenzentrum Ost", "stereotype": "CapabilityConfiguration", "metaclass": "Class", "labels": ["CapabilityConfiguration"], "properties": {}}
   ],
   "edges": [
     {"id": "e1", "source_id": "n1", "target_id": "n2", "connector": "CapabilityDependency", "type": "CAPABILITY_DEPENDENCY", "metaclass": "Dependency", "properties": {}},
     {"id": "e2", "source_id": "n3", "target_id": "n4", "connector": "ActivitySupportsService", "type": "ACTIVITY_SUPPORTS_SERVICE", "metaclass": "Realisation", "properties": {}},
     {"id": "e3", "source_id": "n4", "target_id": "n5", "connector": "IsCapableToPerform", "type": "IS_CAPABLE_TO_PERFORM", "metaclass": "Abstraction", "properties": {}},
-    {"id": "e4", "source_id": "n4", "target_id": "n6", "connector": "ServiceDependency", "type": "SERVICE_DEPENDENCY", "metaclass": "Dependency", "properties": {}}
+    {"id": "e4", "source_id": "n4", "target_id": "n6", "connector": "ServiceDependency", "type": "SERVICE_DEPENDENCY", "metaclass": "Dependency", "properties": {}},
+    {"id": "e5", "source_id": "n7", "target_id": "n4", "connector": "ServiceProvision", "type": "SERVICE_PROVISION", "metaclass": "Abstraction", "properties": {}}
   ]
 }
 ```

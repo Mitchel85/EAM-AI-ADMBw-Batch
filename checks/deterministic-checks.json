@@ -38,11 +38,11 @@
     "example_errors": []
   },
   "example": {
-    "nodes": 6,
-    "edges": 4,
-    "edges_kb_pass": 4,
-    "metadata_node_count": 6,
-    "metadata_edge_count": 4
+    "nodes": 7,
+    "edges": 5,
+    "edges_kb_pass": 5,
+    "metadata_node_count": 7,
+    "metadata_edge_count": 5
   },
   "checks": [
     {
@@ -77,6 +77,41 @@
     },
     {
       "name": "Stereotypes: Header nennt 318 und 44 abstrakt",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "JSON: Stereotypes-Datei vorhanden",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "JSON: Aliases-Datei vorhanden",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "JSON: 318 Einträge",
+      "ok": true,
+      "detail": "ist 318"
+    },
+    {
+      "name": "JSON: 44 abstrakt",
+      "ok": true,
+      "detail": "ist 44"
+    },
+    {
+      "name": "JSON: CapabilityConfiguration ist Subtyp von ResourcePerformer",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "JSON: BWRequirement → Functional/NonfunctionalRequirement",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "Aliases: beide Schreibvarianten abgebildet",
       "ok": true,
       "detail": ""
     },
@@ -168,12 +203,12 @@
     {
       "name": "metadata.node_count == len(nodes)",
       "ok": true,
-      "detail": "6 != 6"
+      "detail": "7 != 7"
     },
     {
       "name": "metadata.edge_count == len(edges)",
       "ok": true,
-      "detail": "4 != 4"
+      "detail": "5 != 5"
     },
     {
       "name": "Node-IDs eindeutig",
@@ -206,7 +241,7 @@
       "detail": ""
     },
     {
-      "name": "Beispiel: alle 4 Kanten Topologie-PASS (exakter Match)",
+      "name": "Beispiel: alle 5 Kanten Topologie-PASS (exakt oder Subtyp)",
       "ok": true,
       "detail": ""
     }

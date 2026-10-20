@@ -7,7 +7,7 @@ Prüft ohne LLM-Aufruf:
  3. Schema im system_prompt.md (erstes ```json-Block) == examples/batch-schema.json
  4. examples/output-example.json gegen das Schema (jsonschema, Draft 2020-12): 0 Fehler
  5. metadata-Zähler == Array-Längen, IDs eindeutig, Referenzen gültig
- 6. Jede Kante gegen die Topologie-KB (client = Quelle, supplier = Ziel, exakter Match, kein 🔒)
+ 6. Jede Kante gegen die Topologie-KB (client = Quelle, supplier = Ziel, exakt oder konkreter Subtyp, kein 🔒)
  7. Node-Stereotype nutzbar (nicht 🔒/ToolboxPage), Metaklasse == AppliesTo, labels enthalten Stereotype
 
 Exit-Code 0 = alle Checks PASS, 1 = mindestens ein FAIL.
@@ -83,6 +83,29 @@ def main():
     check("Stereotypes: 318 Katalog (ohne ToolboxPage/Artefakt)", len(catalog) == 318, f"ist {len(catalog)}")
     check("Stereotypes: Header nennt 318 und 44 abstrakt", "318 Stereotype" in st_text and "44 abstrakt" in st_text)
 
+    # ---------- 1b. Maschinenlesbarer Katalog (Subtyp-Auflösung) ----------
+    cat_path = ROOT / "ADMBw-Stereotypes.json"
+    alias_path = ROOT / "ADMBw-Aliases.json"
+    check("JSON: Stereotypes-Datei vorhanden", cat_path.is_file())
+    check("JSON: Aliases-Datei vorhanden", alias_path.is_file())
+    desc = {}
+    if cat_path.is_file():
+        cat = json.loads(cat_path.read_text(encoding="utf-8"))
+        cat_by = {s["name"]: s for s in cat["stereotypes"]}
+        check("JSON: 318 Einträge", len(cat_by) == 318, f"ist {len(cat_by)}")
+        check("JSON: 44 abstrakt", sum(1 for s in cat_by.values() if s["abstract"]) == 44,
+              f"ist {sum(1 for s in cat_by.values() if s['abstract'])}")
+        desc = {n: set(s.get("concreteDescendants", [])) for n, s in cat_by.items()}
+        check("JSON: CapabilityConfiguration ist Subtyp von ResourcePerformer",
+              "CapabilityConfiguration" in desc.get("ResourcePerformer", set()))
+        check("JSON: BWRequirement → Functional/NonfunctionalRequirement",
+              {"FunctionalRequirement", "NonfunctionalRequirement"}.issubset(desc.get("BWRequirement", set())))
+    if alias_path.is_file():
+        al = json.loads(alias_path.read_text(encoding="utf-8")).get("aliases", {})
+        check("Aliases: beide Schreibvarianten abgebildet",
+              al.get("PropertySetGeneralisation") == "PropertySetGeneralization" and
+              al.get("ServiceSpecificationGeneralization") == "ServiceGeneralization")
+
     tp = parse_topology(tp_text)
     complete = [r for r in tp if r[1] and r[2]]
     roles_only = [r for r in tp if not (r[1] and r[2])]
@@ -144,7 +167,7 @@ def main():
     check("Edge-IDs eindeutig", len([e["id"] for e in edges]) == len({e["id"] for e in edges}))
     check("Alle source_id/target_id referenzieren Nodes",
           all(e["source_id"] in node_ids and e["target_id"] in node_ids for e in edges))
-    check("metadata.generator korrekt", meta.get("generator") == "ADMBw-Batch-Generator v2.0")
+    check("metadata.generator korrekt", meta.get("generator") == "ADMBw-Batch-Generator v2.1")
     check("metadata.standard korrekt", meta.get("standard") == "ADMBw v2026.05")
 
     # ---------- 6. Nodes gegen Stereotype-KB ----------
@@ -176,7 +199,9 @@ def main():
         tgt = next(n for n in nodes if n["id"] == e["target_id"])
         src_allowed = [x.strip() for x in rule[1].split(",") if x.strip()]
         tgt_allowed = [x.strip() for x in rule[2].split(",") if x.strip()]
-        if src["stereotype"] not in src_allowed or tgt["stereotype"] not in tgt_allowed:
+        src_closure = set(src_allowed) | {d for a in src_allowed for d in desc.get(a, set())}
+        tgt_closure = set(tgt_allowed) | {d for a in tgt_allowed for d in desc.get(a, set())}
+        if src["stereotype"] not in src_closure or tgt["stereotype"] not in tgt_closure:
             edge_fail.append(
                 f"{e['id']}: {src['stereotype']}→{e['connector']}→{tgt['stereotype']} "
                 f"vs. Regel {rule[1]}→{rule[0]}→{rule[2]}")
@@ -194,7 +219,7 @@ def main():
                 edge_fail.append(f"{e['id']}: type {e['type']} != {expected}")
                 continue
         edge_pass += 1
-    check(f"Beispiel: alle {len(edges)} Kanten Topologie-PASS (exakter Match)", edge_pass == len(edges),
+    check(f"Beispiel: alle {len(edges)} Kanten Topologie-PASS (exakt oder Subtyp)", edge_pass == len(edges),
           "; ".join(edge_fail))
 
     # ---------- Ergebnis schreiben ----------

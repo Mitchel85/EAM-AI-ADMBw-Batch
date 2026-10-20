@@ -10,7 +10,7 @@
       "additionalProperties": false,
       "required": ["generator", "standard", "source_document", "node_count", "edge_count"],
       "properties": {
-        "generator": {"type": "string", "const": "ADMBw-Batch-Generator v2.0"},
+        "generator": {"type": "string", "const": "ADMBw-Batch-Generator v2.1"},
         "standard": {"type": "string", "const": "ADMBw v2026.05"},
         "source_document": {"type": "string", "minLength": 1},
         "description": {"type": "string"},

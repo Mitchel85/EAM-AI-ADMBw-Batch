@@ -1,11 +1,11 @@
 {
   "metadata": {
-    "generator": "ADMBw-Batch-Generator v2.0",
+    "generator": "ADMBw-Batch-Generator v2.1",
     "standard": "ADMBw v2026.05",
     "source_document": "einsatzfuehrung.txt",
     "description": "Capability- und Servicestruktur Einsatzführung",
-    "node_count": 6,
-    "edge_count": 4
+    "node_count": 7,
+    "edge_count": 5
   },
   "nodes": [
     {
@@ -13,7 +13,9 @@
       "name": "Einsatzführung",
       "stereotype": "Capability",
       "metaclass": "Class",
-      "labels": ["Capability"],
+      "labels": [
+        "Capability"
+      ],
       "properties": {
         "AbstractionLevel": "Operational"
       }
@@ -23,7 +25,9 @@
       "name": "Vernetzte Operationsführung",
       "stereotype": "Capability",
       "metaclass": "Class",
-      "labels": ["Capability"],
+      "labels": [
+        "Capability"
+      ],
       "properties": {
         "AbstractionLevel": "Operational"
       }
@@ -33,7 +37,9 @@
       "name": "Lagebild erstellen",
       "stereotype": "OperationalActivity",
       "metaclass": "Activity",
-      "labels": ["OperationalActivity"],
+      "labels": [
+        "OperationalActivity"
+      ],
       "properties": {
         "AbstractionLevel": "Operational"
       }
@@ -43,7 +49,9 @@
       "name": "FüInfoSys",
       "stereotype": "ServiceSpecification",
       "metaclass": "Class",
-      "labels": ["ServiceSpecification"],
+      "labels": [
+        "ServiceSpecification"
+      ],
       "properties": {
         "SecurityClassification": "VS-NfD"
       }
@@ -53,7 +61,9 @@
       "name": "Lagefusion durchführen",
       "stereotype": "ServiceFunctionAction",
       "metaclass": "Action",
-      "labels": ["ServiceFunctionAction"],
+      "labels": [
+        "ServiceFunctionAction"
+      ],
       "properties": {}
     },
     {
@@ -61,7 +71,19 @@
       "name": "FüInfoSys Kern",
       "stereotype": "ServiceSpecification",
       "metaclass": "Class",
-      "labels": ["ServiceSpecification"],
+      "labels": [
+        "ServiceSpecification"
+      ],
+      "properties": {}
+    },
+    {
+      "id": "n7",
+      "name": "Rechenzentrum Ost",
+      "stereotype": "CapabilityConfiguration",
+      "metaclass": "Class",
+      "labels": [
+        "CapabilityConfiguration"
+      ],
       "properties": {}
     }
   ],
@@ -100,6 +122,15 @@
       "connector": "ServiceDependency",
       "type": "SERVICE_DEPENDENCY",
       "metaclass": "Dependency",
+      "properties": {}
+    },
+    {
+      "id": "e5",
+      "source_id": "n7",
+      "target_id": "n4",
+      "connector": "ServiceProvision",
+      "type": "SERVICE_PROVISION",
+      "metaclass": "Abstraction",
       "properties": {}
     }
   ]
