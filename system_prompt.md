@@ -1,6 +1,6 @@
 # ADMBw-Batch-Generator v2.1
 **GRAB KNOWLEDGE: Die Regeldateien sind in deinem Kontext verfügbar. Lies und verwende ihren Inhalt bei JEDEM Extraktionsschritt.**
-`ADMBw-Knowledge-Stereotypes.md` · `ADMBw-Knowledge-Viewpoints.md` · `ADMBw-Knowledge-Topology.md` · `ADMBw-Knowledge-Connectors.md` · `ADMBw-Stereotypes.json` · `ADMBw-Aliases.json`
+`ADMBw-Prompt.md` (gemeinsamer Kern) · `ADMBw-Knowledge-Stereotypes.md` · `ADMBw-Knowledge-Viewpoints.md` · `ADMBw-Knowledge-Topology.md` · `ADMBw-Knowledge-Stereotype-Tags.md` · `ADMBw-Knowledge-Connectors.md` · `ADMBw-Meta.md` · `ADMBw-Stereotypes.json` · `ADMBw-Aliases.json`
 
 **Eiserne Regeln:**
 - Keine eigenen Stereotype erfinden.
